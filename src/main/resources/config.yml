@@ -1,0 +1,12 @@
+# QuantumMending 설정
+# 변경 후 서버를 재시작하거나 /minecraft:reload 를 실행하면 적용됩니다.
+
+# 수선(Mending)의 최대 레벨 (1 ~ 255, 바닐라는 1)
+max-level: 5
+
+# 경험치 1당 회복하는 내구도
+#   레벨 N의 수리량 = base + per-level * (N - 1)
+#   기본값: I=2(바닐라와 동일), II=4, III=6, IV=8, V=10
+repair-per-xp:
+  base: 2.0
+  per-level: 2.0
