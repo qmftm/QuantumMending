@@ -18,7 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.IntUnaryOperator;
-import java.util.function.Supplier;
 
 /**
  * 자연적으로 얻는 아이템의 수선 레벨을 제한합니다.
@@ -30,16 +29,16 @@ import java.util.function.Supplier;
  */
 final class LevelLimitListener implements Listener {
 
-    private final Supplier<MendingConfig> config;
+    private final ConfigHolder config;
 
-    LevelLimitListener(final Supplier<MendingConfig> config) {
+    LevelLimitListener(final ConfigHolder config) {
         this.config = config;
     }
 
     // 구조물 상자 등 전리품 테이블로 아이템이 생성될 때
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onLootGenerate(final LootGenerateEvent event) {
-        final int max = this.config.get().lootMaxLevel();
+        final int max = this.config.current().lootMaxLevel();
         for (final ItemStack item : event.getLoot()) {
             limit(item, max, rerollUpTo(max));
         }
@@ -48,7 +47,7 @@ final class LevelLimitListener implements Listener {
     // 주민(떠돌이 상인 포함)이 새 거래를 얻을 때
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onVillagerAcquireTrade(final VillagerAcquireTradeEvent event) {
-        final int max = this.config.get().lootMaxLevel();
+        final int max = this.config.current().lootMaxLevel();
         final MerchantRecipe recipe = event.getRecipe();
         final ItemStack result = recipe.getResult().clone();
         if (!limit(result, max, rerollUpTo(max))) {
@@ -70,7 +69,7 @@ final class LevelLimitListener implements Listener {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH || !(event.getCaught() instanceof final Item caught)) {
             return;
         }
-        final int max = this.config.get().lootMaxLevel();
+        final int max = this.config.current().lootMaxLevel();
         final ItemStack item = caught.getItemStack();
         if (limit(item, max, rerollUpTo(max))) {
             caught.setItemStack(item);
@@ -80,7 +79,7 @@ final class LevelLimitListener implements Listener {
     // 인챈트 테이블에 아이템을 올렸을 때: 미리보기(힌트)에 표시되는 레벨을 제한
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPrepareEnchant(final PrepareItemEnchantEvent event) {
-        final int max = this.config.get().tableMaxLevel();
+        final int max = this.config.current().tableMaxLevel();
         for (final EnchantmentOffer offer : event.getOffers()) {
             if (offer != null && offer.getEnchantment().equals(Enchantment.MENDING) && offer.getEnchantmentLevel() > max) {
                 offer.setEnchantmentLevel(max);
@@ -91,7 +90,7 @@ final class LevelLimitListener implements Listener {
     // 인챈트 테이블에서 실제로 인챈트할 때: 붙는 레벨을 제한 (넘으면 최대 레벨로 맞춤)
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEnchant(final EnchantItemEvent event) {
-        final int max = this.config.get().tableMaxLevel();
+        final int max = this.config.current().tableMaxLevel();
         event.getEnchantsToAdd().computeIfPresent(Enchantment.MENDING, (enchantment, level) -> Math.min(level, max));
     }
 

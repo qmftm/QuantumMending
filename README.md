@@ -32,7 +32,15 @@ enchanting-table:
   weight: 2           # 뜰 확률 가중치 (1 ~ 1024)
   max-level: 1        # 인챈트 테이블에서 나오는 최대 레벨
 ```
-변경 후 서버를 재시작하거나 `/minecraft:reload` 를 실행하면 적용됩니다.
+## 명령어
+| 명령어 | 권한 | 설명 |
+|--------|------|------|
+| `/quantummending reload` (`/qm reload`) | `quantummending.reload` (기본 OP) | config.yml 을 다시 불러옵니다 |
+
+리로드로 바로 적용되는 설정: `loot.max-level`, `enchanting-table.enabled`, `enchanting-table.max-level`(상한)
+
+서버를 **재시작해야** 적용되는 설정: `max-level`, `repair-per-xp`, `anvil-cost`, `enchanting-table.weight`
+(인챈트 정의는 마인크래프트가 서버 시작 시에만 읽기 때문입니다. 리로드 시 재시작이 필요한 항목을 알려줍니다.)
 
 ## 모루 합성
 같은 레벨끼리 합치면 한 단계 올라갑니다 (I + I → II, II + II → III, … `max-level` 까지).

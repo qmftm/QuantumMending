@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -59,6 +61,31 @@ record MendingConfig(
         final int tableWeight = Math.clamp(yaml.getInt("enchanting-table.weight", 2), 1, 1024);
         final int tableMaxLevel = Math.clamp(yaml.getInt("enchanting-table.max-level", 1), 1, maxLevel);
         return new MendingConfig(maxLevel, base, perLevel, anvilCost, lootMaxLevel, tableEnabled, tableWeight, tableMaxLevel);
+    }
+
+    /**
+     * 서버 재시작이 있어야 적용되는 항목 중, other 와 값이 다른 설정 키 목록.
+     * (인챈트 정의는 서버 시작 시에만 읽히기 때문)
+     */
+    List<String> restartRequiredChanges(final MendingConfig other) {
+        final List<String> changed = new ArrayList<>();
+        if (this.maxLevel != other.maxLevel) {
+            changed.add("max-level");
+        }
+        if (this.repairBase != other.repairBase || this.repairPerLevel != other.repairPerLevel) {
+            changed.add("repair-per-xp");
+        }
+        if (this.anvilCost != other.anvilCost) {
+            changed.add("anvil-cost");
+        }
+        if (this.tableWeight != other.tableWeight) {
+            changed.add("enchanting-table.weight");
+        }
+        // 테이블 on/off·최대 레벨은 인챈트 비용도 바꾸므로, 비용이 달라졌다면 재시작이 필요합니다.
+        if (changed.isEmpty() && !MendingPack.mendingJson(this).equals(MendingPack.mendingJson(other))) {
+            changed.add("enchanting-table (레벨 분포)");
+        }
+        return changed;
     }
 
     /** 해당 레벨의 경험치 1당 수리량 */
