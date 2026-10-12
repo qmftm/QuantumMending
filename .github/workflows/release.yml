@@ -1,10 +1,17 @@
-# v* 태그를 푸시하면 플러그인을 빌드해서 GitHub 릴리즈에 jar 를 올립니다.
+# 플러그인을 빌드해서 GitHub 릴리즈에 jar 를 올립니다.
+#   - v* 태그를 푸시하거나
+#   - Actions 탭에서 수동 실행(버전 입력, 태그는 자동 생성)
 name: Release
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '릴리즈 버전 (예: 1.0.0)'
+        required: true
 
 permissions:
   contents: write
@@ -24,11 +31,15 @@ jobs:
       # 태그(v1.2.3)의 버전으로 pom 버전을 맞춘 뒤 빌드
       - name: Build
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${{ inputs.version || github.ref_name }}"
+          VERSION="${VERSION#v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           mvn -B -q versions:set -DnewVersion="$VERSION" -DgenerateBackupPoms=false
           mvn -B package
 
       - uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ env.VERSION }}
+          name: QuantumMending ${{ env.VERSION }}
           files: target/QuantumMending-*.jar
           generate_release_notes: true
