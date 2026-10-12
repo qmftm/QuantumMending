@@ -19,12 +19,13 @@ import java.nio.file.Path;
  */
 public final class QuantumMendingBootstrap implements PluginBootstrap {
 
-    // 가장 최근에 읽은 설정. 리로드 때마다 갱신되고, 이벤트 리스너가 이 값을 참조합니다.
-    private volatile MendingConfig config;
+    private final ConfigHolder config = new ConfigHolder();
 
     @Override
     public void bootstrap(final BootstrapContext context) {
-        // 서버 시작 시와 /minecraft:reload 때마다 실행되므로, 리로드하면 바뀐 설정이 반영됩니다.
+        // 서버 시작 시와 리로드(/qm reload, /minecraft:reload) 때마다 실행됩니다.
+        // 단, 인챈트 정의(최대 레벨·수리량·모루 비용·가중치)는 서버 시작 시에만 읽히므로
+        // 리로드로는 태그(인챈트 테이블 등장 여부)와 레벨 상한 설정만 바로 바뀝니다.
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY, event -> {
             try {
                 final MendingConfig config = MendingConfig.load(context.getDataDirectory());
@@ -34,7 +35,7 @@ public final class QuantumMendingBootstrap implements PluginBootstrap {
                     .title(Component.text("QuantumMending"))
                     .autoEnableOnServerStart(true)
                     .position(true, Datapack.Position.TOP));
-                this.config = config;
+                this.config.update(config);
                 context.getLogger().info("Mending {}", config.describe());
             } catch (final IOException e) {
                 throw new UncheckedIOException("Failed to set up QuantumMending datapack", e);
@@ -42,9 +43,9 @@ public final class QuantumMendingBootstrap implements PluginBootstrap {
         });
     }
 
-    // 플러그인 본체에 최신 설정을 꺼내 쓸 수 있는 Supplier 를 넘겨줍니다.
+    // 플러그인 본체와 설정 보관함을 공유합니다.
     @Override
     public JavaPlugin createPlugin(final PluginProviderContext context) {
-        return new QuantumMendingPlugin(() -> this.config);
+        return new QuantumMendingPlugin(this.config);
     }
 }

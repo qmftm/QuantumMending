@@ -96,14 +96,10 @@ final class MendingPack {
     }
 
     /**
-     * 데이터팩 파일들을 root 아래에 (덮어)씁니다.
-     *
-     * @return 데이터팩 루트 경로
+     * 설정으로 수선 인챈트 정의 JSON 을 만듭니다.
+     * 두 설정의 결과가 다르면 인챈트 정의가 바뀐 것이므로 서버 재시작이 필요합니다.
      */
-    static Path write(final Path root, final MendingConfig config) throws IOException {
-        final Path enchantmentDir = root.resolve("data/minecraft/enchantment");
-        Files.createDirectories(enchantmentDir);
-        Files.writeString(root.resolve("pack.mcmeta"), PACK_MCMETA.formatted(MIN_FORMAT, MAX_FORMAT));
+    static String mendingJson(final MendingConfig config) {
         // 인챈트 테이블 사용 여부에 따라 비용을 정합니다.
         final int minCost;
         final int maxCost;
@@ -119,9 +115,21 @@ final class MendingPack {
             maxCost = VANILLA_MAX_COST;
             costPerLevel = VANILLA_COST_PER_LEVEL;
         }
-        Files.writeString(enchantmentDir.resolve("mending.json"), String.format(Locale.ROOT, MENDING_JSON, config.anvilCost(),
+        return String.format(Locale.ROOT, MENDING_JSON, config.anvilCost(),
             config.repairBase(), config.repairPerLevel(), maxCost, costPerLevel, config.maxLevel(),
-            minCost, costPerLevel, config.tableWeight()));
+            minCost, costPerLevel, config.tableWeight());
+    }
+
+    /**
+     * 데이터팩 파일들을 root 아래에 (덮어)씁니다.
+     *
+     * @return 데이터팩 루트 경로
+     */
+    static Path write(final Path root, final MendingConfig config) throws IOException {
+        final Path enchantmentDir = root.resolve("data/minecraft/enchantment");
+        Files.createDirectories(enchantmentDir);
+        Files.writeString(root.resolve("pack.mcmeta"), PACK_MCMETA.formatted(MIN_FORMAT, MAX_FORMAT));
+        Files.writeString(enchantmentDir.resolve("mending.json"), mendingJson(config));
 
         // 테이블을 끄면 이전에 만들어 둔 태그 파일을 지워서 후보에서 빠지게 합니다.
         final Path tag = root.resolve("data/minecraft/tags/enchantment/in_enchanting_table.json");

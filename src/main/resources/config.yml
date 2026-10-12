@@ -1,5 +1,6 @@
 # QuantumMending 설정
-# 변경 후 서버를 재시작하거나 /minecraft:reload 를 실행하면 적용됩니다.
+# 변경 후 /qm reload 로 다시 불러올 수 있습니다.
+# 단, max-level, repair-per-xp, anvil-cost, enchanting-table.weight 는 서버를 재시작해야 적용됩니다.
 
 # 수선(Mending)의 최대 레벨 (1 ~ 255, 바닐라는 1)
 max-level: 5
