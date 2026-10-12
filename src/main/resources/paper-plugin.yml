@@ -1,5 +1,5 @@
 name: QuantumMending
-version: '${version}'
+version: '${project.version}'
 main: io.github.qmftm.quantummending.QuantumMendingPlugin
 bootstrapper: io.github.qmftm.quantummending.QuantumMendingBootstrap
 api-version: '26.1'

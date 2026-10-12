@@ -15,8 +15,8 @@ Level-based repair enchantment
 - Paper 26.1 ~ 26.3 (Java 25)
 
 ## 설치
-1. `./gradlew build`
-2. `build/libs/QuantumMending-<버전>.jar` 를 서버의 `plugins/` 폴더에 넣고 서버를 시작합니다.
+1. `mvn package` (JDK 25 필요)
+2. `target/QuantumMending-<버전>.jar` 를 서버의 `plugins/` 폴더에 넣고 서버를 시작합니다.
 
 ## 설정 (`plugins/QuantumMending/config.yml`)
 ```yaml
@@ -24,8 +24,13 @@ max-level: 5          # 수선 최대 레벨 (1 ~ 255)
 repair-per-xp:
   base: 2.0           # I 레벨의 경험치당 수리량
   per-level: 2.0      # 레벨이 1 오를 때마다 늘어나는 수리량
+anvil-cost: 4         # 모루 비용 계수 (바닐라 4, 책으로 붙이면 절반)
 ```
 변경 후 서버를 재시작하거나 `/minecraft:reload` 를 실행하면 적용됩니다.
+
+## 모루 합성
+같은 레벨끼리 합치면 한 단계 올라갑니다 (I + I → II, II + II → III, … `max-level` 까지).
+인챈트 비용은 `anvil-cost × 결과 레벨` 이며 책으로 붙이면 절반이고, 여기에 바닐라 작업 패널티가 더해집니다.
 
 ## 동작 방식
 플러그인이 설정값으로 `minecraft:mending` 인챈트 정의를 덮어쓰는 데이터팩을 생성해 등록합니다

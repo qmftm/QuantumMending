@@ -7,7 +7,7 @@ import java.util.Locale;
 
 /**
  * Writes a datapack overriding the vanilla mending enchantment definition.
- * Everything except {@code max_level} and the {@code repair_with_xp} factor matches vanilla 26.x.
+ * Everything except {@code max_level}, {@code anvil_cost} and the {@code repair_with_xp} factor matches vanilla 26.x.
  */
 final class MendingPack {
 
@@ -27,7 +27,7 @@ final class MendingPack {
 
     private static final String MENDING_JSON = """
         {
-          "anvil_cost": 4,
+          "anvil_cost": %d,
           "description": {
             "translate": "enchantment.minecraft.mending"
           },
@@ -69,7 +69,7 @@ final class MendingPack {
         final Path enchantmentDir = root.resolve("data/minecraft/enchantment");
         Files.createDirectories(enchantmentDir);
         Files.writeString(root.resolve("pack.mcmeta"), PACK_MCMETA.formatted(MIN_FORMAT, MAX_FORMAT));
-        Files.writeString(enchantmentDir.resolve("mending.json"), String.format(Locale.ROOT, MENDING_JSON,
+        Files.writeString(enchantmentDir.resolve("mending.json"), String.format(Locale.ROOT, MENDING_JSON, config.anvilCost(),
             config.repairBase(), config.repairPerLevel(), config.maxLevel()));
         return root;
     }

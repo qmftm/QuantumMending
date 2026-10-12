@@ -10,3 +10,8 @@ max-level: 5
 repair-per-xp:
   base: 2.0
   per-level: 2.0
+
+# 모루 비용 계수 (바닐라는 4)
+#   모루에서 붙일 때 드는 레벨 = anvil-cost * 결과 레벨 (책으로 붙이면 절반)
+#   0이면 인챈트 자체 비용 없이 작업 패널티만 듭니다.
+anvil-cost: 4

@@ -27,7 +27,8 @@ public final class QuantumMendingBootstrap implements PluginBootstrap {
                     .title(Component.text("QuantumMending"))
                     .autoEnableOnServerStart(true)
                     .position(true, Datapack.Position.TOP));
-                context.getLogger().info("Mending max level {}, repair per XP: {}", config.maxLevel(), config.describeLevels());
+                context.getLogger().info("Mending max level {}, anvil cost {}, repair per XP: {}",
+                    config.maxLevel(), config.anvilCost(), config.describeLevels());
             } catch (final IOException e) {
                 throw new UncheckedIOException("Failed to set up QuantumMending datapack", e);
             }

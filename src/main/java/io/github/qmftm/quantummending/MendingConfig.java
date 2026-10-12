@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-record MendingConfig(int maxLevel, double repairBase, double repairPerLevel) {
+record MendingConfig(int maxLevel, double repairBase, double repairPerLevel, int anvilCost) {
 
     static final int MAX_ENCHANTMENT_LEVEL = 255;
 
@@ -27,7 +27,8 @@ record MendingConfig(int maxLevel, double repairBase, double repairPerLevel) {
         final int maxLevel = Math.clamp(yaml.getInt("max-level", 5), 1, MAX_ENCHANTMENT_LEVEL);
         final double base = Math.max(0.0, yaml.getDouble("repair-per-xp.base", 2.0));
         final double perLevel = Math.max(0.0, yaml.getDouble("repair-per-xp.per-level", 2.0));
-        return new MendingConfig(maxLevel, base, perLevel);
+        final int anvilCost = Math.max(0, yaml.getInt("anvil-cost", 4));
+        return new MendingConfig(maxLevel, base, perLevel, anvilCost);
     }
 
     double repairAt(final int level) {
