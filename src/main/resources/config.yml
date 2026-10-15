@@ -32,3 +32,7 @@ enchanting-table:
   weight: 2
   # 인챈트 테이블에서 나오는 수선의 최대 레벨 (1 ~ max-level)
   max-level: 1
+
+# 서버 시작 시 GitHub 에서 새 버전을 확인하고, 새 버전이 있으면
+# 콘솔과 접속하는 OP(권한 quantummending.update)에게 알립니다.
+update-check: true
