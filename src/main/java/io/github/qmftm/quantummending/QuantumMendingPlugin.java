@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 플러그인 본체. 수리량·최대 레벨 등은 데이터팩이 처리하고,
- * 여기서는 상자·거래·낚시·인챈트 테이블의 레벨 상한을 거는 리스너와 리로드 명령어를 등록합니다.
+ * 여기서는 상자·거래·낚시·인챈트 테이블의 레벨 상한을 거는 리스너, 리로드 명령어, 업데이트 확인을 등록합니다.
  */
 public final class QuantumMendingPlugin extends JavaPlugin {
 
@@ -27,6 +27,13 @@ public final class QuantumMendingPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(new LevelLimitListener(this.config), this);
+
+        // 업데이트 확인 (config 의 update-check 로 끌 수 있음)
+        if (this.config.current().updateCheck()) {
+            final UpdateChecker updateChecker = new UpdateChecker(this);
+            this.getServer().getPluginManager().registerEvents(updateChecker, this);
+            updateChecker.check();
+        }
 
         // /quantummending reload (별칭 /qm reload)
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> event.registrar().register(

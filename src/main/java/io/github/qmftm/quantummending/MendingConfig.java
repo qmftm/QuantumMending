@@ -23,6 +23,7 @@ import java.util.StringJoiner;
  * @param tableEnabled   인챈트 테이블에서 수선이 뜨는지 여부
  * @param tableWeight    인챈트 테이블 가중치
  * @param tableMaxLevel  인챈트 테이블에서 나오는 최대 레벨
+ * @param updateCheck    서버 시작 시 새 버전 확인 여부
  */
 record MendingConfig(
     int maxLevel,
@@ -32,7 +33,8 @@ record MendingConfig(
     int lootMaxLevel,
     boolean tableEnabled,
     int tableWeight,
-    int tableMaxLevel
+    int tableMaxLevel,
+    boolean updateCheck
 ) {
 
     // 마인크래프트 인챈트 레벨의 최대값
@@ -60,7 +62,8 @@ record MendingConfig(
         final boolean tableEnabled = yaml.getBoolean("enchanting-table.enabled", false);
         final int tableWeight = Math.clamp(yaml.getInt("enchanting-table.weight", 2), 1, 1024);
         final int tableMaxLevel = Math.clamp(yaml.getInt("enchanting-table.max-level", 1), 1, maxLevel);
-        return new MendingConfig(maxLevel, base, perLevel, anvilCost, lootMaxLevel, tableEnabled, tableWeight, tableMaxLevel);
+        final boolean updateCheck = yaml.getBoolean("update-check", true);
+        return new MendingConfig(maxLevel, base, perLevel, anvilCost, lootMaxLevel, tableEnabled, tableWeight, tableMaxLevel, updateCheck);
     }
 
     /**

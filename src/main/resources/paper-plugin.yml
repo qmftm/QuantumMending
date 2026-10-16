@@ -8,3 +8,6 @@ permissions:
   quantummending.reload:
     description: /quantummending reload 사용 권한
     default: op
+  quantummending.update:
+    description: 접속 시 새 버전 알림을 받음
+    default: op

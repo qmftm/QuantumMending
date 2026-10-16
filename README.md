@@ -37,6 +37,11 @@ enchanting-table:
 |--------|------|------|
 | `/quantummending reload` (`/qm reload`) | `quantummending.reload` (기본 OP) | config.yml 을 다시 불러옵니다 |
 
+## 업데이트 알림
+서버 시작 시 GitHub 릴리즈에서 새 버전을 확인합니다. 새 버전이 있으면 콘솔에 표시하고,
+`quantummending.update` 권한(기본 OP)이 있는 플레이어가 접속할 때 다운로드 링크와 함께 알려줍니다.
+끄려면 config.yml 에서 `update-check: false` 로 설정하세요.
+
 리로드로 바로 적용되는 설정: `loot.max-level`, `enchanting-table.enabled`, `enchanting-table.max-level`(상한)
 
 서버를 **재시작해야** 적용되는 설정: `max-level`, `repair-per-xp`, `anvil-cost`, `enchanting-table.weight`
